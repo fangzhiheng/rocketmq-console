@@ -1,0 +1,23 @@
+<mat-toolbar>
+    <span>RocketMQ Console</span>
+    <span class="spacer"></span>
+    <mat-select *ngIf="clusters" [(ngModel)]="currentCluster" (ngModelChange)="currentClusterChanged()" style="width: 8em">
+      <mat-option *ngFor="let cluster of clusters | async" [value]="cluster">{{cluster.name}}</mat-option>
+    </mat-select>
+    <a routerLink="/broker" routerLinkActive="active">
+      <span>Broker</span>
+    </a>
+    <a routerLink="/topic" routerLinkActive="active">
+      <span>Topic</span>
+    </a>
+    <a routerLink="/producer" routerLinkActive="active">
+      <span>Producer</span>
+    </a>
+    <a routerLink="/consumer" routerLinkActive="active">
+      <span>Consumer</span>
+    </a>
+    <a routerLink="/message" routerLinkActive="active">
+      <span>Message</span>
+    </a>
+  </mat-toolbar>
+<router-outlet></router-outlet>

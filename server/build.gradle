@@ -1,0 +1,64 @@
+plugins {
+    id "org.jetbrains.kotlin.jvm" version "1.5.31"
+    id "org.jetbrains.kotlin.plugin.allopen" version "1.5.31"
+    id "io.quarkus" version "2.4.2.Final"
+}
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+}
+
+dependencies {
+    implementation(enforcedPlatform("${quarkusPlatformGroupId}:${quarkusPlatformArtifactId}:${quarkusPlatformVersion}"))
+    implementation('io.quarkus:quarkus-kotlin')
+    implementation('org.jetbrains.kotlin:kotlin-reflect')
+    implementation('org.jetbrains.kotlin:kotlin-stdlib-jdk8')
+    implementation('org.jetbrains.kotlinx:kotlinx-coroutines-core')
+    implementation('io.quarkus:quarkus-arc')
+    implementation('io.quarkus:quarkus-smallrye-metrics')
+
+    // exclude netty dependency, because rocketmq-client contains the netty-all
+    implementation('io.quarkus:quarkus-resteasy') {
+        exclude group: 'io.netty'
+    }
+    implementation('io.quarkus:quarkus-smallrye-openapi') {
+        exclude group: 'io.netty'
+    }
+    implementation('io.quarkus:quarkus-resteasy-jackson') {
+        exclude group: 'io.netty'
+    }
+
+    implementation("org.apache.rocketmq:rocketmq-tools:${rocketmqVersion}")
+
+    testImplementation 'io.quarkus:quarkus-junit5'
+    testImplementation 'io.rest-assured:rest-assured'
+}
+
+group 'ie.fzh'
+version '0.0.1-SNAPSHOT'
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
+}
+
+allOpen {
+    annotation("javax.ws.rs.Path")
+    annotation("javax.enterprise.context.ApplicationScoped")
+    annotation("io.quarkus.test.junit.QuarkusTest")
+}
+
+compileKotlin {
+    kotlinOptions.jvmTarget = JavaVersion.VERSION_11
+    kotlinOptions.javaParameters = true
+}
+
+compileTestKotlin {
+    kotlinOptions.jvmTarget = JavaVersion.VERSION_11
+}
+
+tasks.build.doLast {
+    delete("${projectDir}/src/main/resources/META-INF/resources/")
+    mkdir("${projectDir}/src/main/resources/META-INF/resources/")
+}

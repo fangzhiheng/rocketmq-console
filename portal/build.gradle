@@ -1,0 +1,27 @@
+String npm = 'npm'
+if (org.gradle.internal.os.OperatingSystem.current().isWindows()) {
+  npm += '.cmd'
+}
+
+tasks.create('build') {
+  group 'build'
+}.doLast {
+  exec {
+    commandLine npm, 'install'
+  }
+  exec {
+    commandLine npm, 'run', 'build'
+  }
+
+  copy {
+    from "${projectDir}/dist/portal"
+    into "${projectDir}/../server/src/main/resources/META-INF/resources/"
+    include '**.*'
+  }
+}
+
+tasks.create('clean') {
+  group 'build'
+}.doLast {
+  project.delete("${projectDir}/dist")
+}
